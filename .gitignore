@@ -1,0 +1,9 @@
+bugle.db
+bugle.db-wal
+bugle.db-shm
+__pycache__/
+*.pyc
+.env
+static/uploads/*
+!static/uploads/.gitkeep
+

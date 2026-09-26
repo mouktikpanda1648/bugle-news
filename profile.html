@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Trust File | The Daily Bugle</title>
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/wire.css" />
+  <link rel="stylesheet" href="/static/css/profile.css" />
+</head>
+<body>
+
+  <header class="bugle-masthead">
+    <div class="brand-wrapper">
+      <a href="/" class="brand-title">The Daily Bugle</a>
+      <span class="brand-subtitle">Reporter Profile</span>
+    </div>
+    <div class="nav-cluster">
+      <nav class="main-nav">
+        <a href="/">The Wire</a>
+        <a href="/report">Submit Scoop</a>
+        <a href="/desk" id="desk-nav-link" style="display: none;">Editor Desk</a>
+      </nav>
+      <div id="auth-header-container"></div>
+    </div>
+  </header>
+
+  <main class="profile-wrapper">
+    <section class="profile-header">
+      <div class="profile-identity">
+        <h1 id="profile-name">Loading...</h1>
+        <p id="profile-meta">Fetching your trust file</p>
+      </div>
+      <div class="trust-score-ring">
+        <span id="profile-trust-value" class="ring-value">--</span>
+        <span class="ring-label">Trust Score</span>
+      </div>
+    </section>
+
+    <div id="quarantine-banner" class="quarantine-banner">
+      ⚠️ Your account is currently under quarantine audit following repeated disputed reports. Submissions are held for editor review.
+    </div>
+
+    <section class="stat-chip-row">
+      <div class="stat-chip"><div class="chip-label">Reports Filed</div><div id="chip-report-count" class="chip-value">0</div></div>
+      <div class="stat-chip"><div class="chip-label">Strikes</div><div id="chip-strike-count" class="chip-value">0</div></div>
+      <div class="stat-chip"><div class="chip-label">Role</div><div id="chip-role" class="chip-value">—</div></div>
+    </section>
+
+    <section class="reports-section">
+      <h2>Your Report History</h2>
+      <div id="report-history-list" class="report-history-list">
+        <div class="skeleton" style="height: 70px;"></div>
+        <div class="skeleton" style="height: 70px;"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bugle-footer">
+    <p>&copy; 2026 The Daily Bugle Intelligence Desk. Transforming civic noise into explainable truth.</p>
+  </footer>
+
+  <script src="/static/js/toast.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/profile.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      await initHeaderSession({ requireAuth: true, loginRedirect: "/profile" });
+      loadMyTrustFile();
+    });
+  </script>
+</body>
+</html>

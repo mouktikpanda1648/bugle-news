@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newsroom Clearance | The Daily Bugle</title>
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/login.css" />
+</head>
+<body>
+
+  <header class="bugle-masthead">
+    <div class="brand-wrapper">
+      <a href="/" class="brand-title">The Daily Bugle</a>
+      <span class="brand-subtitle">Civic Intelligence Network</span>
+    </div>
+    <nav class="main-nav">
+      <a href="/">The Wire</a>
+      <a href="/login" class="active">Sign In</a>
+    </nav>
+  </header>
+
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Reporter Terminal</h1>
+        <p>Public readers can browse all incidents freely. Verification is required only to submit scoops.</p>
+      </div>
+
+      <div id="auth-alert" class="auth-alert"></div>
+      <div id="dev-code-banner" class="dev-code-banner">
+        <span>🛠️ Dev mode — no SMTP relay configured, your code is:</span>
+        <span id="dev-code-value" class="dev-code-value">------</span>
+      </div>
+
+      <form id="auth-form" class="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div class="form-field" id="target-input-field">
+          <label id="target-label" for="target-input">Email or Phone Number</label>
+          <input type="text" id="target-input" required placeholder="reporter@dailybugle.com or +91..." autocomplete="username" />
+          <span class="field-hint">We'll send a 6-digit clearance code — no password needed.</span>
+        </div>
+
+        <div id="otp-stage" class="otp-stage-container">
+          <div class="otp-header-meta">
+            <span>Code expires in: <strong id="expiry-timer" class="otp-timer-highlight">05:00</strong></span>
+            <span>Target: <strong id="target-display" style="color: var(--text-main);"></strong></span>
+          </div>
+
+          <div class="form-field">
+            <label for="otp-code-input">6-Digit Passcode</label>
+            <input type="text" id="otp-code-input" class="otp-input-field" maxlength="6" inputmode="numeric" placeholder="------" autocomplete="one-time-code" />
+          </div>
+
+          <label class="editor-toggle-row">
+            <input type="checkbox" id="editor-toggle" onchange="toggleEditorField(this)" />
+            I have a newsroom editor invite code
+          </label>
+          <div class="form-field" id="editor-code-field" style="display: none;">
+            <label for="editor-code-input">Editor Invite Code</label>
+            <input type="text" id="editor-code-input" placeholder="Enter invite code" />
+          </div>
+
+          <div class="resend-action-row">
+            <button type="button" class="btn-text-action" onclick="resetForm()">Change Address</button>
+            <button type="button" id="btn-resend" class="btn-text-action" disabled onclick="sendCodeRequest()">
+              Resend Code (<span id="resend-countdown">60</span>s)
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="btn-primary" class="auth-submit-btn">Send 6-Digit Passcode</button>
+      </form>
+
+      <div class="seed-accounts">
+        <strong>Demo accounts</strong> (identifier only, OTP is always shown in dev mode):<br />
+        Editor — editor@dailybugle.com &bull; Citizen — peter@dailybugle.com
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/js/toast.js"></script>
+  <script>
+    let isVerifyingOtp = false;
+    let resendTimerInterval = null;
+    let expiryTimerInterval = null;
+    let resendSeconds = 60;
+    let expirySeconds = 300;
+
+    function showAlert(text, type = "error") {
+      const box = document.getElementById("auth-alert");
+      box.className = `auth-alert ${type}`;
+      box.textContent = text;
+      box.style.display = "block";
+    }
+
+    function toggleEditorField(checkbox) {
+      document.getElementById("editor-code-field").style.display = checkbox.checked ? "flex" : "none";
+    }
+
+    function startTimers() {
+      clearInterval(resendTimerInterval);
+      clearInterval(expiryTimerInterval);
+
+      resendSeconds = 60;
+      const resendBtn = document.getElementById("btn-resend");
+      const resendCounter = document.getElementById("resend-countdown");
+      resendBtn.disabled = true;
+
+      resendTimerInterval = setInterval(() => {
+        resendSeconds--;
+        resendCounter.textContent = resendSeconds;
+        if (resendSeconds <= 0) {
+          clearInterval(resendTimerInterval);
+          resendBtn.disabled = false;
+          resendBtn.textContent = "Resend Code";
+        }
+      }, 1000);
+
+      expirySeconds = 300;
+      const expiryDisplay = document.getElementById("expiry-timer");
+      expiryTimerInterval = setInterval(() => {
+        expirySeconds--;
+        const mins = String(Math.floor(expirySeconds / 60)).padStart(2, "0");
+        const secs = String(expirySeconds % 60).padStart(2, "0");
+        expiryDisplay.textContent = `${mins}:${secs}`;
+        if (expirySeconds <= 0) {
+          clearInterval(expiryTimerInterval);
+          showAlert("Code expired. Please request a new one.");
+          resetForm();
+        }
+      }, 1000);
+    }
+
+    function resetForm() {
+      clearInterval(resendTimerInterval);
+      clearInterval(expiryTimerInterval);
+      isVerifyingOtp = false;
+      document.getElementById("target-input").disabled = false;
+      document.getElementById("otp-stage").style.display = "none";
+      document.getElementById("otp-code-input").value = "";
+      document.getElementById("dev-code-banner").style.display = "none";
+      document.getElementById("btn-primary").textContent = "Send 6-Digit Passcode";
+      document.getElementById("btn-primary").disabled = false;
+    }
+
+    async function sendCodeRequest() {
+      const target = document.getElementById("target-input").value.trim();
+      if (!target) {
+        showAlert("Please enter your identifier.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("btn-primary");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Dispatching Code...";
+
+      const formData = new FormData();
+      formData.append("identifier", target);
+      formData.append("purpose", "LOGIN");
+
+      try {
+        const res = await fetch("/api/auth/otp/request", { method: "POST", body: formData });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showAlert(data.error || "Failed to dispatch code.");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send 6-Digit Passcode";
+          return;
+        }
+
+        isVerifyingOtp = true;
+        document.getElementById("target-input").disabled = true;
+        document.getElementById("target-display").textContent = target;
+        document.getElementById("otp-stage").style.display = "flex";
+        document.getElementById("otp-code-input").focus();
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Verify Passcode & Enter";
+
+        if (data.dev_code) {
+          document.getElementById("dev-code-value").textContent = data.dev_code;
+          document.getElementById("dev-code-banner").style.display = "flex";
+          showAlert(`Code dispatched (${data.delivered_via}).`, "info");
+        } else {
+          showAlert(`Clearance code dispatched via ${data.delivered_via}! Check your inbox.`, "success");
+        }
+        startTimers();
+      } catch (err) {
+        showAlert("Server connection error.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Send 6-Digit Passcode";
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      if (!isVerifyingOtp) {
+        await sendCodeRequest();
+        return;
+      }
+
+      const target = document.getElementById("target-input").value.trim();
+      const code = document.getElementById("otp-code-input").value.trim();
+      const editorChecked = document.getElementById("editor-toggle").checked;
+      const editorCode = editorChecked ? document.getElementById("editor-code-input").value.trim() : "";
+
+      if (code.length !== 6) {
+        showAlert("Please enter the full 6-digit passcode.");
+        return;
+      }
+
+      const submitBtn = document.getElementById("btn-primary");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Verifying...";
+
+      const formData = new FormData();
+      formData.append("identifier", target);
+      formData.append("otp_code", code);
+      formData.append("purpose", "LOGIN");
+      formData.append("editor_invite_code", editorCode);
+
+      try {
+        const res = await fetch("/api/auth/otp/verify", { method: "POST", body: formData });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showAlert(data.error || "Verification failed.");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Verify Passcode & Enter";
+          return;
+        }
+
+        showAlert("Clearance verified! Redirecting...", "success");
+        const params = new URLSearchParams(window.location.search);
+        setTimeout(() => {
+          window.location.href = params.get("redirect") || "/";
+        }, 500);
+      } catch (err) {
+        showAlert("Connection error.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Verify Passcode & Enter";
+      }
+    }
+  </script>
+</body>
+</html>

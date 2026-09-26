@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Citizen Tip Line | The Daily Bugle</title>
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/report.css" />
+</head>
+<body>
+
+  <header class="bugle-masthead">
+    <div class="brand-wrapper">
+      <a href="/" class="brand-title">The Daily Bugle</a>
+      <span class="brand-subtitle">Citizen Tip Line</span>
+    </div>
+
+    <div class="nav-cluster">
+      <nav class="main-nav">
+        <a href="/">The Wire</a>
+        <a href="/report" class="active">Submit Scoop</a>
+        <a href="/desk" id="desk-nav-link" style="display: none;">Editor Desk</a>
+      </nav>
+      <div id="auth-header-container">
+        <a href="/login?redirect=/report" class="btn-auth-action">Sign In</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="report-wrapper">
+
+    <section class="emergency-banner">
+      <div class="emergency-header">Urgent Emergency? Contact Responders Directly</div>
+      <div class="sos-grid">
+        <a id="sos-police" href="tel:112" class="sos-call-btn"><span>Police (112)</span><span class="tel-num">DIAL NOW</span></a>
+        <a id="sos-fire" href="tel:101" class="sos-call-btn"><span>Fire Dept (101)</span><span class="tel-num">DIAL NOW</span></a>
+        <a id="sos-ambulance" href="tel:108" class="sos-call-btn"><span>Ambulance (108)</span><span class="tel-num">DIAL NOW</span></a>
+      </div>
+    </section>
+
+    <div class="form-card">
+      <div class="form-header">
+        <h1 class="form-title">File an Incident Scoop</h1>
+        <p class="form-desc">Logged-in field reports are attributed to your reporter trust index. Spam or fabricated claims trigger account strikes.</p>
+      </div>
+
+      <form id="incident-report-form" enctype="multipart/form-data">
+        <input type="hidden" name="latitude" id="form-lat" value="20.2961" />
+        <input type="hidden" name="longitude" id="form-lng" value="85.8245" />
+        <input type="hidden" name="is_spatial" value="1" />
+
+        <div class="form-group">
+          <label for="category-select">Incident Nature</label>
+          <select id="category-select" name="category" class="form-control" required>
+            <option value="Obstruction">Road Obstruction / Traffic Hazard</option>
+            <option value="Fire">Fire / Explosion / Hazardous Material</option>
+            <option value="Assault">Physical Altercation / Public Disturbance</option>
+            <option value="Civic">Infrastructure Failure / Waterlogging</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="report-desc">Eyewitness Observation</label>
+          <textarea id="report-desc" name="description" class="form-control" required
+            placeholder="State exact physical details (e.g., 'Fallen tree blocking NH-16 lane near Patia', 'Transformer smoking at intersection')..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Media Verification Proof</label>
+          <label class="file-upload-box" for="file-upload">
+            <span class="upload-hint">Click or drop photo evidence here</span>
+            <input type="file" id="file-upload" name="image" accept="image/*" />
+            <div id="file-selected-name" class="upload-filename"></div>
+          </label>
+        </div>
+
+        <div class="geo-status" id="geo-status">Acquiring GPS location...</div>
+
+        <button type="submit" id="submit-btn" class="btn-submit" style="margin-top: 1.25rem;">
+          Transmit to Trust Cascade
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <footer class="bugle-footer">
+    <p>&copy; 2026 The Daily Bugle Intelligence Desk. Transforming civic noise into explainable truth.</p>
+  </footer>
+
+  <script src="/static/js/toast.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/report.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => initHeaderSession({ requireAuth: true, loginRedirect: "/report" }));
+  </script>
+</body>
+</html>

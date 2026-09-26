@@ -1,0 +1,183 @@
+/* ==========================================================================
+   THE DAILY BUGLE — WIRE & RADAR
+   ========================================================================== */
+
+.page-container {
+  max-width: 1220px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.page-hero {
+  margin-bottom: 1.75rem;
+}
+
+.page-hero h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.page-hero p {
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+}
+
+/* Control Bar */
+.wire-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.tab-btn:hover { background-color: var(--bg-card); color: var(--text-main); border-color: var(--border-strong); }
+.tab-btn.active { background: var(--grad-brand); color: #fff; border-color: transparent; }
+
+.search-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 220px;
+  max-width: 340px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-family: var(--font-ui);
+}
+.search-input:focus { outline: none; border-color: var(--bugle-blue); }
+
+.jjj-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--border-strong); transition: 0.3s; border-radius: 24px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+  background-color: white; transition: 0.3s; border-radius: 50%;
+}
+input:checked + .slider { background: var(--grad-brand); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* News Cards Grid */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.35rem;
+}
+
+.news-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-med), border-color var(--transition-fast);
+}
+.news-card:hover { transform: translateY(-3px); border-color: var(--border-strong); }
+
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; }
+.timestamp { font-size: 0.75rem; color: var(--text-dim); font-family: var(--font-mono); }
+
+.card-headline { font-size: 1.2rem; font-weight: 700; color: var(--text-main); line-height: 1.32; margin-bottom: 0.65rem; }
+
+body.jjj-active .card-headline {
+  font-family: var(--font-display);
+  letter-spacing: 0.3px;
+  color: #ff6f91;
+}
+
+.card-summary { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+/* Explainability & Trust Meter Block */
+.trust-panel {
+  background-color: var(--bg-inset);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.9rem;
+}
+
+.trust-header { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.45rem; }
+.trust-metric-highlight { font-family: var(--font-mono); color: var(--bugle-green); }
+
+.score-bar-track { height: 6px; width: 100%; background-color: var(--border-subtle); border-radius: 3px; overflow: hidden; margin-bottom: 0.65rem; }
+.score-bar-fill { height: 100%; background: var(--grad-trust); transition: width 0.4s ease-out; }
+.score-bar-fill.danger { background: var(--bugle-red); }
+
+.explainability-reasons { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; color: var(--text-dim); }
+.explainability-reasons li { display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255, 255, 255, 0.05); padding-bottom: 0.2rem; }
+.explainability-reasons li span.val-pos { color: var(--bugle-green); font-family: var(--font-mono); font-weight: 700; }
+.explainability-reasons li span.val-neg { color: var(--bugle-red); font-family: var(--font-mono); font-weight: 700; }
+
+.empty-state {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 3.5rem 1rem;
+  color: var(--text-dim);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+.empty-state p { font-size: 1.05rem; font-weight: 700; color: var(--text-muted); }
+
+/* Radar Map */
+#map-viewport {
+  width: 100%;
+  height: 580px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .wire-toolbar { flex-direction: column; align-items: stretch; }
+  .search-cluster { max-width: none; }
+  .news-grid { grid-template-columns: 1fr; }
+}

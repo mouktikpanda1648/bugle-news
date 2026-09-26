@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authority Triage Desk | The Daily Bugle</title>
+  <link rel="stylesheet" href="/static/css/base.css" />
+  <link rel="stylesheet" href="/static/css/desk.css" />
+</head>
+<body>
+
+  <header class="bugle-masthead">
+    <div class="brand-wrapper">
+      <a href="/" class="brand-title">The Daily Bugle</a>
+      <span class="brand-subtitle">Authority Triage Desk</span>
+    </div>
+    <div class="nav-cluster">
+      <nav class="main-nav">
+        <a href="/">The Wire</a>
+        <a href="/report">Submit Scoop</a>
+        <a href="/desk" class="active">Editor Desk</a>
+      </nav>
+      <div id="auth-header-container"></div>
+    </div>
+  </header>
+
+  <main class="desk-wrapper">
+    <section class="desk-header-bar">
+      <div class="desk-title-group">
+        <h1>Incident Triage & Verification Queue</h1>
+        <p>Human-in-the-loop audit console: inspect signals, verify authentic threats, and quarantine bad actors.</p>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-item"><span class="stat-label">Active Signals</span><span id="stat-total" class="stat-val">0</span></div>
+        <div class="stat-item"><span class="stat-label">Verified</span><span id="stat-verified" class="stat-val" style="color: var(--bugle-green);">0</span></div>
+        <div class="stat-item"><span class="stat-label">Under Audit</span><span id="stat-review" class="stat-val" style="color: var(--bugle-yellow);">0</span></div>
+      </div>
+    </section>
+
+    <div class="table-container">
+      <table class="triage-table">
+        <thead>
+          <tr>
+            <th>Incident & Details</th>
+            <th>Category</th>
+            <th>Trust Index</th>
+            <th>Corroboration</th>
+            <th>Status</th>
+            <th>Triage Action</th>
+          </tr>
+        </thead>
+        <tbody id="desk-table-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="bugle-footer">
+    <p>&copy; 2026 The Daily Bugle Intelligence Desk. Transforming civic noise into explainable truth.</p>
+  </footer>
+
+  <script src="/static/js/toast.js"></script>
+  <script src="/static/js/auth.js"></script>
+  <script src="/static/js/desk.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const session = await initHeaderSession({ requireAuth: true, requireEditor: true, loginRedirect: "/desk" });
+      if (session.authenticated && session.role === "EDITOR") loadDeskQueue();
+    });
+  </script>
+</body>
+</html>

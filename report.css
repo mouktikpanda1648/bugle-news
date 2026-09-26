@@ -1,0 +1,87 @@
+/* ==========================================================================
+   THE DAILY BUGLE — CITIZEN REPORT & SOS
+   ========================================================================== */
+
+.report-wrapper {
+  max-width: 680px;
+  width: 100%;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.emergency-banner {
+  background: linear-gradient(135deg, rgba(239, 35, 89, 0.22), rgba(159, 18, 57, 0.35));
+  border: 1px solid var(--bugle-red);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 24px rgba(239, 35, 89, 0.18);
+}
+
+.emergency-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-weight: 800; color: #fff; font-size: 0.95rem;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;
+}
+.emergency-header::before { content: '🚨'; font-size: 1.1rem; }
+
+.sos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.sos-call-btn {
+  background-color: var(--bugle-red); color: #fff; text-decoration: none; font-weight: 700; font-size: 0.85rem;
+  padding: 0.65rem 0.5rem; border-radius: var(--radius-sm); text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+.sos-call-btn span.tel-num { font-family: var(--font-mono); font-size: 1rem; font-weight: 800; }
+.sos-call-btn:hover { background-color: var(--bugle-red-hover); transform: translateY(-2px); }
+
+.form-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.form-header { border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+.form-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
+.form-desc { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem; }
+
+.form-group { margin-bottom: 1.35rem; }
+.form-group label {
+  display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-main);
+  margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.form-control {
+  width: 100%; padding: 0.75rem 1rem; background-color: var(--bg-inset);
+  border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: var(--text-main);
+  font-family: var(--font-ui); font-size: 0.95rem; transition: border-color var(--transition-fast);
+}
+.form-control:focus { outline: none; border-color: var(--bugle-blue); box-shadow: 0 0 0 3px rgba(67, 184, 247, 0.15); }
+select.form-control { cursor: pointer; }
+textarea.form-control { resize: vertical; min-height: 110px; }
+
+.file-upload-box {
+  border: 2px dashed var(--border-strong); border-radius: var(--radius-sm); padding: 1.5rem; text-align: center;
+  background-color: var(--bg-inset); cursor: pointer; transition: border-color var(--transition-fast);
+}
+.file-upload-box:hover { border-color: var(--bugle-blue); }
+.file-upload-box input[type="file"] { display: none; }
+.upload-hint { font-size: 0.85rem; color: var(--text-muted); }
+.upload-filename { font-size: 0.8rem; color: var(--bugle-green); font-weight: 700; margin-top: 0.5rem; display: none; }
+
+.geo-status { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.4rem; font-family: var(--font-mono); }
+
+.btn-submit {
+  width: 100%; padding: 0.9rem; background: var(--grad-brand); color: #fff; border: none;
+  border-radius: var(--radius-sm); font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer; box-shadow: 0 8px 20px rgba(239, 35, 89, 0.25);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(239, 35, 89, 0.35); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+@media (max-width: 500px) {
+  .sos-grid { grid-template-columns: 1fr; }
+}
